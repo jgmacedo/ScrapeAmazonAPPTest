@@ -4,6 +4,10 @@ import type { IScraper } from '../../application/interfaces/IScraper';
 import type { Product } from '../../domain/entities/Product';
 import { config } from '../../config/config';
 
+/**
+ * AmazonScraper implements the IScraper interface to scrape product data from Amazon.
+ * It uses ScrapeOps as a proxy service to avoid Amazon's anti-bot measures.
+ */
 export class AmazonScraper implements IScraper {
     private retryCount: number = 0;
     
@@ -11,19 +15,27 @@ export class AmazonScraper implements IScraper {
         console.log('AmazonScraper initialized with API key:', this.apiKey ? 'Present' : 'Missing');
     }
 
+    /**
+     * Generates the ScrapeOps URL with necessary parameters.
+     * Uses render_js: false to improve performance since we don't need JavaScript execution.
+     */
     private getScrapeopsUrl(keyword: string): string {
         const url = `${config.amazonBaseUrl}/s?k=${encodeURIComponent(keyword)}&page=1`;
         const params = new URLSearchParams({
             api_key: this.apiKey,
             url: url,
             country: 'us',
-            render_js: 'false'
+            render_js: 'false'  // Disable JavaScript rendering for better performance
         });
         const scrapeopsUrl = `https://proxy.scrapeops.io/v1/?${params.toString()}`;
         console.log('Generated ScrapeOps URL:', scrapeopsUrl);
         return scrapeopsUrl;
     }
 
+    /**
+     * Implements retry logic for failed requests.
+     * Uses exponential backoff with configurable retry attempts and timeout.
+     */
     private async retryRequest(url: string): Promise<any> {
         try {
             console.log('Making request with timeout:', config.scrapingConfig.timeout);
@@ -50,6 +62,10 @@ export class AmazonScraper implements IScraper {
         }
     }
 
+    /**
+     * Main scraping method that orchestrates the scraping process.
+     * Handles request retries and response validation.
+     */
     async scrapeSearchPage(keyword: string): Promise<Product[]> {
         try {
             console.log('Starting scrape for keyword:', keyword);
@@ -70,18 +86,23 @@ export class AmazonScraper implements IScraper {
         }
     }
 
+    /**
+     * Parses the HTML response and extracts product information.
+     * Handles different product layouts (electronics vs consumables) by trying multiple selectors.
+     */
     private parseSearchResults(html: string): Product[] {
         console.log('Starting to parse HTML');
         const dom = new JSDOM(html);
         const document = dom.window.document;
         const products: Product[] = [];
 
+        // Find all product divs that have a valid ASIN (Amazon's product ID)
         const productDivs = document.querySelectorAll('[data-asin]:not([data-asin=""])');
         console.log(`Found ${productDivs.length} product divs`);
 
         productDivs.forEach((div, index) => {
             try {
-                // Extract title - multiple possible selectors for different layouts
+                // Try multiple selectors for title to handle different product layouts
                 const titleSelectors = [
                     'h2.a-size-medium span',  // Electronics layout
                     'h2.a-size-base-plus span', // Consumables layout
@@ -97,7 +118,7 @@ export class AmazonScraper implements IScraper {
                     }
                 }
 
-                // Extract rating - multiple possible selectors
+                // Try multiple selectors for rating to handle different layouts
                 const ratingSelectors = [
                     'i.a-icon-star-small span.a-icon-alt',  // Electronics layout
                     'i.a-icon-star span.a-icon-alt',       // Consumables layout
@@ -116,7 +137,7 @@ export class AmazonScraper implements IScraper {
                     }
                 }
 
-                // Extract image URL - multiple possible selectors
+                // Try multiple selectors for image URL
                 const imageSelectors = [
                     'img.s-image',           // Electronics layout
                     '.s-image',              // Consumables layout
@@ -133,7 +154,7 @@ export class AmazonScraper implements IScraper {
                     }
                 }
 
-                // Extract review count - multiple possible selectors
+                // Try multiple selectors for review count
                 const reviewSelectors = [
                     'span.a-size-base.s-underline-text',  // Electronics layout
                     'span[aria-label*="reviews"]',        // Consumables layout
@@ -153,6 +174,7 @@ export class AmazonScraper implements IScraper {
                     }
                 }
 
+                // Only add products that have all required fields
                 if (title && rating && imageUrl) {
                     products.push({
                         title,
