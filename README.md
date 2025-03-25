@@ -41,15 +41,19 @@ A full-stack application for scraping Amazon product search results. Built with 
    cd amazon-product-scraper
    ```
 
-2. Set up the backend:
+2. Create a `.env` file in the root directory:
+   ```bash
+   cp backend/.env.example .env
+   # Edit .env and add your ScrapeOps API key
+   ```
+
+3. Set up the backend:
    ```bash
    cd backend
-   cp .env.example .env
-   # Edit .env and add your ScrapeOps API key
    bun install
    ```
 
-3. Set up the frontend:
+4. Set up the frontend:
    ```bash
    cd ../frontend
    bun install
