@@ -60,10 +60,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="product-info">
               <h3 class="product-title">${product.title}</h3>
               <div class="product-rating">
-                ${'★'.repeat(Math.floor(product.rating))}${product.rating % 1 !== 0 ? '½' : ''}
-                ${'☆'.repeat(5 - Math.ceil(product.rating))}
-                <span class="review-count">(${product.reviewCount.toLocaleString()} reviews)</span>
+                <span class="rating-number">${product.rating}</span>
+                <span class="rating-text">/ 5</span>
               </div>
+              <div class="product-reviews">${product.reviewCount.toLocaleString()} reviews</div>
             </div>
           </div>
         `).join('');

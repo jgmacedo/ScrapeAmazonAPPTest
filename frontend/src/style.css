@@ -184,12 +184,27 @@ button:hover {
 }
 
 .product-rating {
-  color: #f3a847;
-  margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: clamp(0.9rem, 2vw, 1rem);
+  gap: 4px;
+  margin: 8px 0;
+  color: #f0c14b;
+}
+
+.rating-number {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.rating-text {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.product-reviews {
+  color: #666;
+  font-size: 0.9em;
+  margin-top: 4px;
 }
 
 .review-count {
