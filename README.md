@@ -1,104 +1,130 @@
- # Amazon Product Scraper
+# Amazon Product Scraper
 
-A full-stack application that scrapes Amazon product search results and displays them in a responsive frontend. Built with TypeScript, Node.js, and Vite.
+A full-stack application for scraping Amazon product search results. Built with Bun, Express, and Vite.
 
 ## Features
 
-- Real-time Amazon product search
-- Responsive frontend with modern UI
-- Rate limiting protection (10 requests per minute)
-- Error handling and user feedback
-- Support for different product layouts (electronics and consumables)
+- Real-time product search
+- Responsive frontend design
+- Rate limiting and error handling
 - Detailed product information including:
   - Product title
-  - Rating (out of 5)
-  - Number of reviews
+  - Rating
+  - Review count
   - Product image
 
 ## Prerequisites
 
 - [Bun](https://bun.sh/) (v1.2.5 or higher)
-- [ScrapeOps](https://scrapeops.io/) API key (for Amazon scraping)
+- A ScrapeOps API key (for Amazon scraping)
 
 ## Project Structure
 
 ```
 .
-├── backend/                 # Backend Node.js/TypeScript application
-│   ├── src/
-│   │   ├── application/    # Application logic and interfaces
-│   │   ├── domain/        # Domain entities and models
-│   │   ├── infrastructure/# External services and implementations
-│   │   └── interfaces/    # HTTP controllers and routes
-│   └── package.json
-├── frontend/              # Frontend Vite application
-│   ├── src/
-│   │   ├── main.js       # Main application entry point
-│   │   └── style.css     # Global styles
-│   └── package.json
-└── README.md
+├── backend/           # Express.js backend
+│   ├── src/          # Source code
+│   ├── .env.example  # Example environment variables
+│   └── package.json  # Backend dependencies
+└── frontend/         # Vite.js frontend
+    ├── src/          # Source code
+    └── package.json  # Frontend dependencies
 ```
 
 ## Setup
 
+### Option 1: Manual Setup
+
 1. Clone the repository:
-```bash
-git clone <repository-url>
-cd amazon-product-scraper
-```
+   ```bash
+   git clone <repository-url>
+   cd amazon-product-scraper
+   ```
 
 2. Set up the backend:
-```bash
-cd backend
-bun install
-```
+   ```bash
+   cd backend
+   cp .env.example .env
+   # Edit .env and add your ScrapeOps API key
+   bun install
+   ```
 
-3. Create a `.env` file in the backend directory:
-```env
-SCRAPEOPS_API_KEY=your_api_key_here
-PORT=3001
-```
+3. Set up the frontend:
+   ```bash
+   cd ../frontend
+   bun install
+   ```
 
-4. Set up the frontend:
-```bash
-cd ../frontend
-bun install
-```
+### Option 2: Docker Setup (Recommended)
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd amazon-product-scraper
+   ```
+
+2. Create a `.env` file in the root directory:
+   ```bash
+   cp backend/.env.example .env
+   # Edit .env and add your ScrapeOps API key
+   ```
+
+3. Build and run with Docker Compose:
+   ```bash
+   docker-compose up --build
+   ```
 
 ## Running the Application
 
+### Manual Setup
+
 1. Start the backend server:
-```bash
-cd backend
-bun run dev
-```
-The backend will run on http://localhost:3001
+   ```bash
+   cd backend
+   bun run dev
+   ```
 
 2. In a new terminal, start the frontend development server:
-```bash
-cd frontend
-bun run dev
-```
-The frontend will run on http://localhost:5173
+   ```bash
+   cd frontend
+   bun run dev
+   ```
 
-3. Open your browser and navigate to http://localhost:5173
+3. Access the application:
+   - Frontend: http://localhost:5173
+   - Backend API: http://localhost:3001
+
+### Docker Setup
+
+1. Start all services:
+   ```bash
+   docker-compose up
+   ```
+
+2. Access the application:
+   - Frontend: http://localhost:5173
+   - Backend API: http://localhost:3001
+
+3. To stop the services:
+   ```bash
+   docker-compose down
+   ```
 
 ## Rate Limiting
 
-The application implements rate limiting to prevent abuse:
-- Maximum 10 requests per minute
-- Warning threshold at 5 remaining requests
-- Visual feedback for rate limit status
-- Automatic request blocking when limit is reached
+The application implements rate limiting to prevent excessive API calls:
+- Maximum 60 requests per minute
+- Rate limit headers are included in responses
+- Frontend displays remaining requests and reset time
 
 ## Error Handling
 
-The application handles various error scenarios:
+The application includes comprehensive error handling:
 - Network errors
 - Rate limit exceeded
 - Invalid search terms
-- Missing product data
-- API failures
+- Missing API key
+- Server errors
 
 ## Contributing
 
