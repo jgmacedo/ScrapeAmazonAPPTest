@@ -6,8 +6,7 @@ export class SearchController {
     private readonly scrapeProducts: ScrapeProducts;
 
     constructor() {
-        const apiKey = process.env.SCRAPEOPS_API_KEY || '';
-        const scraper = new AmazonScraper(apiKey);
+        const scraper = new AmazonScraper();
         this.scrapeProducts = new ScrapeProducts(scraper);
     }
 

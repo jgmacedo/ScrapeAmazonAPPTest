@@ -2,23 +2,48 @@ import { JSDOM } from 'jsdom';
 import axios from 'axios';
 import type { IScraper } from '../../application/interfaces/IScraper';
 import type { Product } from '../../domain/entities/Product';
+import { config } from '../../config/config';
 
 export class AmazonScraper implements IScraper {
-    constructor(private readonly apiKey: string) {}
+    private retryCount: number = 0;
+    
+    constructor(private readonly apiKey: string = config.scrapeOpsApiKey) {}
 
     private getScrapeopsUrl(keyword: string): string {
         const params = new URLSearchParams({
             api_key: this.apiKey,
-            url: `https://www.amazon.com/s?k=${keyword}&page=1`,
+            url: `${config.amazonBaseUrl}/s?k=${keyword}&page=1`,
             country: 'us'
         });
         return `https://proxy.scrapeops.io/v1/?${params.toString()}`;
     }
 
+    private async retryRequest(url: string): Promise<any> {
+        try {
+            const response = await axios.get(url, {
+                timeout: config.scrapingConfig.timeout,
+                headers: {
+                    'User-Agent': config.userAgent
+                }
+            });
+            return response;
+        } catch (error) {
+            if (this.retryCount < config.scrapingConfig.retries) {
+                this.retryCount++;
+                console.log(`Retry attempt ${this.retryCount} of ${config.scrapingConfig.retries}`);
+                // Wait for 1 second before retrying
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                return this.retryRequest(url);
+            }
+            throw error;
+        }
+    }
+
     async scrapeSearchPage(keyword: string): Promise<Product[]> {
         try {
+            this.retryCount = 0; // Reset retry count
             const url = this.getScrapeopsUrl(keyword);
-            const response = await axios.get(url);
+            const response = await this.retryRequest(url);
 
             if (response.status !== 200) {
                 throw new Error(`Failed to scrape page: ${response.status}`);
