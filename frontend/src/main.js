@@ -81,6 +81,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const ratingContainer = document.createElement('div');
     ratingContainer.className = 'product-rating';
     
+    // Create rating wrapper
+    const ratingWrapper = document.createElement('div');
+    ratingWrapper.style.display = 'flex';
+    ratingWrapper.style.alignItems = 'center';
+    
     // Add rating number
     const ratingNumber = document.createElement('span');
     ratingNumber.className = 'rating-number';
@@ -97,8 +102,9 @@ document.addEventListener('DOMContentLoaded', () => {
     reviews.textContent = `${formatNumber(product.reviewCount)} reviews`;
 
     // Assemble rating section
-    ratingContainer.appendChild(ratingNumber);
-    ratingContainer.appendChild(ratingText);
+    ratingWrapper.appendChild(ratingNumber);
+    ratingWrapper.appendChild(ratingText);
+    ratingContainer.appendChild(ratingWrapper);
     ratingContainer.appendChild(reviews);
 
     // Assemble product card

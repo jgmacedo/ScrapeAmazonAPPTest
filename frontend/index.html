@@ -16,11 +16,11 @@
         </header>
         
         <main>
-          <form id="searchForm" class="search-form">
-            <div class="input-group">
+          <form id="search-form">
+            <div class="search-input-container">
               <input 
                 type="text" 
-                id="searchInput" 
+                id="search-input" 
                 placeholder="Enter product name..."
                 required
               >
@@ -30,12 +30,13 @@
             </div>
           </form>
 
-          <div id="loading" class="loading hidden">
-            <div class="spinner"></div>
-            <p>Searching for products...</p>
+          <div id="loading-indicator">
+            Searching for products...
           </div>
 
-          <div id="results" class="results-container"></div>
+          <div id="error-message"></div>
+
+          <div id="results-container"></div>
         </main>
       </div>
     </div>
