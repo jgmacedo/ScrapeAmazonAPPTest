@@ -1,4 +1,3 @@
-# Use Bun
 FROM oven/bun:1
 
 # Set working directory
@@ -13,11 +12,8 @@ RUN bun install
 # Copy source code
 COPY . .
 
-# Create .env file from example
-COPY .env.example .env
-
 # Expose port
 EXPOSE 3001
 
 # Start the application
-CMD ["bun", "run", "dev"] 
+CMD ["bun", "run", "dev"]

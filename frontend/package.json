@@ -9,6 +9,9 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^6.2.3"
+    "vite": "^6.2.4"
+  },
+  "dependencies": {
+    "esbuild": "^0.25.2"
   }
 }
