@@ -1,6 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import express from "express";
+import cors from "cors";
 import { config } from "./config/config";
 import productRoutes from "./routes/productRoutes";
 
@@ -50,6 +51,7 @@ class AmazonScraper {
 
 const app = express();
 const port = config.port || 3001;
+app.use(cors());
 
 // Use productRoutes for all product-related endpoints
 app.use("/api", productRoutes);
